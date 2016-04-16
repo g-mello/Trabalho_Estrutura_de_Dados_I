@@ -59,22 +59,34 @@ int main(void){
                 break;
 
             case 2: 
+                if( inicio == NULL )
+                    printf("A lista está vazia.\n");
+                
+                else
+                    mostrar_lista(inicio);
 
-                mostrar_lista(inicio);
                 break;
 
             case 3: 
-
-                printf("Nome: ");
-                scanf("%s", &nome);
-                pesquisar(inicio, nome);
+                if( inicio == NULL )
+                    printf("A lista está vazia.\n");
+                else{
+                    printf("Nome: ");
+                    scanf("%s", &nome);
+                    pesquisar(inicio, nome);
+                }
 
                 break;
 
             case 4: 
-                printf("Nome: ");
-                scanf("%s", &nome);
-                remover(&inicio, nome);
+                if( inicio == NULL ){
+                    printf("A lista está vazia.\n");
+                }
+                else{
+                    printf("Nome: ");
+                    scanf("%s", &nome);
+                    remover(&inicio, nome);
+                }
                 break;
 
             default:
@@ -172,38 +184,44 @@ void remover( no_t **inicio, char *nome){
     no_t *p, *aux; 
 
     // Procurar a posição do nome na lista
-    p=*inicio;
-    while( strcmp(nome, p->nome) != 0 && p->prox->prox != NULL){
-        p = p->prox;
-    }
-
-    // Primeira posição e unica posição na lista 
-    if( p == *inicio && p->prox == NULL ){
-        free(p);
-        *inicio = NULL; 
-        printf("Nome removido.\n");
-    }
-
-    // Primeira posição e contem mais posições na lista 
-    else if( p == *inicio && p->prox != NULL ){
-        *inicio = (*inicio)->prox; 
+    //p=*inicio;
+    //while( strcmp(nome, p->nome) != 0 && p->prox->prox != NULL){
+    //    p = p->prox;
+   // }
+   
+     p = *inicio;
+    // Remover primeira posição 
+    if( strcmp(p->nome,nome) == 0 ){
+        *inicio = p->prox; 
         free(p);
         printf("Nome removido.\n");
+        printf("Primeira posição.\n");
     }
 
-    // Ultima posição na lista
-    else if( p->prox->prox == NULL && strcmp(p->prox->nome, nome) == 0){
-        free(p->prox);
-        p->prox = NULL;
-        printf("Nome removido.\n");
-    }
+    else{
 
-    // Qualquer posição no meio
-    else if( p->prox->prox != NULL ) {
-        aux = p->prox->prox;
-        free(p->prox);
-        p->prox = aux;
-        printf("Nome removido.\n");
+        // Procurar a posição do nome na lista
+        while( strcmp(nome, p->prox->nome) != 0 && p->prox->prox != NULL){
+            p = p->prox;
+        }
+
+        // Remover última posição na lista
+        if( p->prox->prox == NULL ){
+            free(p->prox);
+            p->prox = NULL;
+            printf("Nome removido.\n");
+            printf("Ultima posição.\n");
+        }
+
+        // Qualquer posição no meio
+        else {
+            printf("P aponta para %s \n", p->nome);
+            aux = p->prox->prox;
+            free(p->prox);
+            p->prox = aux;
+            printf("Nome removido.\n");
+            printf("Qualquer posição.\n");
+        }
     }
 }
 
