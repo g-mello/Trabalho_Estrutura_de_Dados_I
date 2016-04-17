@@ -25,14 +25,16 @@ no_t *criar_no(void);
 void inserir(no_t **, no_t *);
 void mostrar_lista(no_t *);
 void remover( no_t **, char []);
-void pesquisar( no_t *, char []);
+no_t *pesquisar( no_t *, char []);
 
 int main(void){
 
-    no_t *inicio = NULL;
+    no_t *inicio, *cadastro;
     char nome[20];
     int controle, op;
 
+    inicio=NULL;
+    cadastro=NULL;
 
     // Menu
     controle=1;
@@ -70,10 +72,25 @@ int main(void){
             case 3: 
                 if( inicio == NULL )
                     printf("A lista está vazia.\n");
+
                 else{
-                    printf("Nome: ");
-                    scanf("%s", &nome);
-                    pesquisar(inicio, nome);
+                    if( (cadastro = calloc(1,sizeof(no_t))) == NULL )
+                        printf("Erro na alocação.\n");
+                    else{
+                        
+                        printf("Nome: ");
+                        scanf("%s", &nome);
+                        cadastro = pesquisar(inicio,nome);
+
+                        if( cadastro == NULL ){
+                            printf("Nome não cadastrado.\n");
+                        }
+                        else{
+                            printf("Nome: %s\n", cadastro->nome); 
+                            printf("Rua: %s numero: %d\n", cadastro->rua, cadastro->numero);
+                            printf("Cidade: %s Estado %s \n", cadastro->cidade, cadastro->estado);
+                        }
+                    }
                 }
 
                 break;
@@ -90,9 +107,12 @@ int main(void){
                 break;
 
             default:
+                printf("Erro, opção inválida.\n");
                 break;
-        }
-    }
+
+        }// end switch
+    }// end while
+
 	return 0;
 
 }
@@ -140,26 +160,33 @@ void inserir(no_t **inicio, no_t *novo){
     
     no_t *p;
     p = *inicio;
-    
-    // A lista está vazia ou tem apenas o primeiro nome já é maior ou igual
-    // que o novo nome
-    if( p == NULL || ( strcmp(p->nome, novo->nome) >= 0 ) ){
 
-        novo->prox = *inicio;
-        *inicio = novo;
+    // Verificar se o nome já foi cadastrado
+    if( pesquisar(*inicio, novo->nome) != NULL ){
+            printf("\n Erro: Nome já cadastrado.\n");
     }
     else{
-        
-        // Fazer p apontar para o nó onde o novo nó sera inserido antes
-        p=*inicio;
-        while( p->prox != NULL && strcmp(p->prox->nome, novo->nome) < 0 ) {
+    
+        // A lista está vazia ou tem apenas o primeiro nome já é maior ou igual
+        // que o novo nome
+        if( p == NULL || ( strcmp(p->nome, novo->nome) >= 0 ) ){
 
-            p = p->prox;
+            novo->prox = *inicio;
+            *inicio = novo;
         }
+        else{
+            
+            // Fazer p apontar para o nó onde o novo nó sera inserido antes
+            p=*inicio;
+            while( p->prox != NULL && strcmp(p->prox->nome, novo->nome) < 0 ) {
 
-        // inserir o novo nó
-        novo->prox =  p->prox;
-        p->prox = novo;
+                p = p->prox;
+            }
+
+            // inserir o novo nó
+            novo->prox =  p->prox;
+            p->prox = novo;
+        }
     }
 
 }
@@ -183,12 +210,6 @@ void remover( no_t **inicio, char *nome){
 
     no_t *p, *aux; 
 
-    // Procurar a posição do nome na lista
-    //p=*inicio;
-    //while( strcmp(nome, p->nome) != 0 && p->prox->prox != NULL){
-    //    p = p->prox;
-   // }
-   
      p = *inicio;
     // Remover primeira posição 
     if( strcmp(p->nome,nome) == 0 ){
@@ -225,7 +246,7 @@ void remover( no_t **inicio, char *nome){
     }
 }
 
-void pesquisar( no_t *inicio, char nome[]){
+no_t *pesquisar( no_t *inicio, char nome[]){
 
     no_t *p;
 
@@ -240,13 +261,10 @@ void pesquisar( no_t *inicio, char nome[]){
         }
         
         if( p != NULL ){
-           printf("Nome: %s\n", p->nome); 
-           printf("Rua: %s, %d\n", p->rua, p->numero);
-           printf("Cidade: %s\n", p->cidade);
-           printf("Estado: %s\n\n", p->estado);
+            return p;
         }
         else{
-            printf("Nome não localizado.\n");
+            return NULL;
         }
     }
 }
