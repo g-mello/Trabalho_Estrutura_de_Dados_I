@@ -14,9 +14,71 @@ void inserir( lista_c *, char []);
 lista_c *buscar( lista_c *, char[]);
 void mostrar( lista_c *);
 lista_c *remover( lista_c *, lista_c *, int );
-void sorteio(lista_c *, int );
+void sorteio(lista_c *, lista_c *, int );
 
 int main(void){
+
+    lista_c *cabeca;
+
+    if( (cabeca = calloc(1,sizeof(lista_c))) == NULL )
+        printf("Erro na alocação.\n");
+    else{
+        cabeca->prox = cabeca;
+    }
+
+    char nome[20];
+    int controle, op, M;
+
+    controle=1;
+    while(controle){
+        printf("=========MENU============");
+        printf("0.Sair \n");
+        printf("1.Inserir \n");
+        printf("2.Mostrar\n");
+        printf("3.Sorteio\n");
+        printf("Opção: ");
+        scanf("%d", &op);
+
+        switch(op){
+            case 0:
+                controle = 0;
+                break;
+
+            case 1:
+                printf("Nome: ");
+                scanf("%s", &nome);
+                inserir(cabeca,nome);
+                break;
+
+            case 2:
+                if( cabeca->prox == cabeca ){
+                    printf("A lista está vazia.\n");
+                }
+                else{
+                    mostrar(cabeca);
+                }
+                break;
+
+            case 3:
+                if( cabeca->prox == cabeca ){
+                    printf("A lista está vazia.\n");
+                }
+                else{
+                    printf("Nome inicial: ");
+                    scanf("%s", &nome);
+
+                    printf("M: ");
+                    scanf("%d", &M);
+                    sorteio(cabeca, buscar(cabeca,nome),M);
+                }
+
+                break;
+            default:
+                printf("Opção inválida.\n");
+                break;
+
+        }// end while
+    }// end while
 
     return 0;
 }
@@ -67,8 +129,9 @@ void mostrar( lista_c *cabeca ){
     p=cabeca->prox;
 
     printf("Lista: ");
-    while( p->prox != cabeca ){
+    while( p != cabeca ){
         printf("%s ", p->nome);
+        p = p->prox;
     }
     printf("\n");
 }
@@ -104,11 +167,10 @@ lista_c *remover( lista_c *cabeca, lista_c *inicio, int M){
    }
 }
 
-void sorteio(lista_c *cabeca, int M){
+void sorteio(lista_c *cabeca, lista_c *inicio, int M){
 
     lista_c *p;
-
-    p = cabeca->prox;
+    p=inicio;
     do{
         p=remover(cabeca,p,M);
 
