@@ -65,7 +65,13 @@ int main(void){
                 }
                 else{
                     printf("Nome inicial: ");
-                    scanf("%s", &nome);
+                    do{
+
+                     scanf("%s", &nome);
+                     if( buscar(cabeca,nome) == NULL)
+                         printf("Nome não está na lista.\n");
+
+                    }while( buscar(cabeca,nome) == NULL );
 
                     printf("M: ");
                     scanf("%d", &M);
@@ -140,15 +146,18 @@ lista_c *remover( lista_c *cabeca, lista_c *inicio, int M){
 
    lista_c *p, *r;
 
+   // faz p rodar M vezes na lista
    p=inicio;
    for( int i=0; i < M; i++){
         p = p->prox;
    } 
 
+   // caso p acabe pontando para a cabeça da lista
    if( p == cabeca)
        p = p->prox;
 
-   if( p->prox == cabeca ){
+   // se somente sobrar um elemento na lista
+   if( p->prox == cabeca && cabeca->prox == p){
        printf("Ganhador da Viagem: %s\n", p->nome);
        return NULL;
    }
