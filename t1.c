@@ -74,9 +74,6 @@ int main(void){
                     printf("A lista está vazia.\n");
 
                 else{
-                    if( (cadastro = calloc(1,sizeof(no_t))) == NULL )
-                        printf("Erro na alocação.\n");
-                    else{
                         
                         printf("Nome: ");
                         scanf("%s", &nome);
@@ -91,7 +88,6 @@ int main(void){
                             printf("Cidade: %s Estado %s \n", cadastro->cidade, cadastro->estado);
                         }
                     }
-                }
 
                 break;
 
