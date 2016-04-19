@@ -116,7 +116,7 @@ int main(void){
 
             default:
                 printf("Erro, opção inválida.\n");
-                system("clear");
+                continuar();
                 break;
 
         }// end switch

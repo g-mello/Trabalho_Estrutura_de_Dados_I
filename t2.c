@@ -1,7 +1,11 @@
 
+//Project Name: Trabalho de Estrutura de Dados 1
+//Authors: Guilherme Mello Oliveira, Caio Silva Poli
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<ctype.h>
 
 struct no{
     char nome[20];
@@ -53,15 +57,18 @@ int main(void){
             case 2:
                 if( cabeca->prox == cabeca ){
                     printf("A lista está vazia.\n");
+                    continuar();
                 }
                 else{
                     mostrar(cabeca);
+                    continuar();
                 }
                 break;
 
             case 3:
                 if( cabeca->prox == cabeca ){
                     printf("A lista está vazia.\n");
+                    continuar();
                 }
                 else{
                     printf("Nome inicial: ");
@@ -76,11 +83,13 @@ int main(void){
                     printf("M: ");
                     scanf("%d", &M);
                     sorteio(cabeca, buscar(cabeca,nome),M);
+                    continuar();
                 }
 
                 break;
             default:
                 printf("Opção inválida.\n");
+                continuar();
                 break;
 
         }// end while
@@ -186,9 +195,17 @@ void sorteio(lista_c *cabeca, lista_c *inicio, int M){
     }while( p != NULL );
 }
 
+void continuar(void){
+    char continuar;
 
+    printf("\nContinuar ? S/N: ");
+    do{
+        scanf("%c", &continuar);
+        continuar = toupper(continuar);
+    }while( continuar != 'S' && continuar != 'N'); 
+    system("clear");
 
-
+}
 
 
 
