@@ -19,6 +19,7 @@ lista_c *buscar( lista_c *, char[]);
 void mostrar( lista_c *);
 lista_c *remover( lista_c *, lista_c *, int );
 void sorteio(lista_c *, lista_c *, int );
+void continuar(void);
 
 int main(void){
 
@@ -35,7 +36,7 @@ int main(void){
 
     controle=1;
     while(controle){
-        printf("=========MENU============");
+        printf("=========MENU============\n");
         printf("0.Sair \n");
         printf("1.Inserir \n");
         printf("2.Mostrar\n");
@@ -52,6 +53,7 @@ int main(void){
                 printf("Nome: ");
                 scanf("%s", &nome);
                 inserir(cabeca,nome);
+                system("clear");
                 break;
 
             case 2:
