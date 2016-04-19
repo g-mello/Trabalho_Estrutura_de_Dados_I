@@ -1,11 +1,11 @@
 
-//Project Name: DefaultProject
-//Owner: gmello
-//UID : 1000
+//Project Name: Trabalho Estrutura de Dados 1 
+//Authors: Guilherme Mello Oliveira, Caio Silva Poli 
 
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<ctype.h>
 
 struct no{
 
@@ -26,6 +26,7 @@ void inserir(no_t **, no_t *);
 void mostrar_lista(no_t *);
 void remover( no_t **, char []);
 no_t *pesquisar( no_t *, char []);
+void continuar(void);
 
 int main(void){
 
@@ -57,22 +58,29 @@ int main(void){
             case 1: 
 
                 inserir(&inicio, criar_no()); 
+                system("clear");
 
                 break;
 
             case 2: 
-                if( inicio == NULL )
+                if( inicio == NULL ){
                     printf("A lista está vazia.\n");
+                    continuar();
+                }
                 
-                else
+                else{
                     mostrar_lista(inicio);
+                    continuar();
+                }
+
 
                 break;
 
             case 3: 
-                if( inicio == NULL )
+                if( inicio == NULL ){
                     printf("A lista está vazia.\n");
-
+                    continuar();
+                }
                 else{
                         
                         printf("Nome: ");
@@ -81,11 +89,12 @@ int main(void){
 
                         if( cadastro == NULL ){
                             printf("Nome não cadastrado.\n");
+                            continuar();
                         }
                         else{
-                            printf("Nome: %s\n", cadastro->nome); 
-                            printf("Rua: %s numero: %d\n", cadastro->rua, cadastro->numero);
-                            printf("Cidade: %s Estado %s \n", cadastro->cidade, cadastro->estado);
+                            printf("Rua: %s Numero: %d\n", cadastro->rua, cadastro->numero);
+                            printf("Cidade: %s\n Estado: %s \n", cadastro->cidade, cadastro->estado);
+                            continuar();
                         }
                     }
 
@@ -94,16 +103,20 @@ int main(void){
             case 4: 
                 if( inicio == NULL ){
                     printf("A lista está vazia.\n");
+                    continuar();
                 }
                 else{
                     printf("Nome: ");
                     scanf("%s", &nome);
                     remover(&inicio, nome);
+                    printf("%s removido.\n", nome);
+                    continuar();
                 }
                 break;
 
             default:
                 printf("Erro, opção inválida.\n");
+                system("clear");
                 break;
 
         }// end switch
@@ -211,8 +224,8 @@ void remover( no_t **inicio, char *nome){
     if( strcmp(p->nome,nome) == 0 ){
         *inicio = p->prox; 
         free(p);
-        printf("Nome removido.\n");
-        printf("Primeira posição.\n");
+        //printf("Nome removido.\n");
+        //printf("Primeira posição.\n");
     }
 
     else{
@@ -226,18 +239,18 @@ void remover( no_t **inicio, char *nome){
         if( p->prox->prox == NULL ){
             free(p->prox);
             p->prox = NULL;
-            printf("Nome removido.\n");
-            printf("Ultima posição.\n");
+           // printf("Nome removido.\n");
+           // printf("Ultima posição.\n");
         }
 
         // Qualquer posição no meio
         else {
-            printf("P aponta para %s \n", p->nome);
+            //printf("P aponta para %s \n", p->nome);
             aux = p->prox->prox;
             free(p->prox);
             p->prox = aux;
-            printf("Nome removido.\n");
-            printf("Qualquer posição.\n");
+            //printf("Nome removido.\n");
+            //printf("Qualquer posição.\n");
         }
     }
 }
@@ -246,9 +259,10 @@ no_t *pesquisar( no_t *inicio, char nome[]){
 
     no_t *p;
 
-    if((p=calloc(1, sizeof(no_t))) == NULL)
+    if((p=calloc(1, sizeof(no_t))) == NULL){
         printf("Erro na alocação.\n");
-
+        return NULL;
+    }
     else{
 
         p = inicio;
@@ -256,11 +270,21 @@ no_t *pesquisar( no_t *inicio, char nome[]){
             p = p->prox; 
         }
         
-        if( p != NULL ){
+        if( p != NULL )
             return p;
-        }
-        else{
+        else
             return NULL;
-        }
     }
+}
+
+void continuar(void){
+    char continuar;
+
+        printf("\nContinuar ? S/N: ");
+        do{
+            scanf("%c", &continuar);
+            continuar = toupper(continuar);
+        }while( continuar != 'S' && continuar != 'N');
+        system("clear");
+
 }
