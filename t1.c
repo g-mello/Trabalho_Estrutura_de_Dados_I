@@ -7,6 +7,9 @@
 #include<string.h>
 #include<ctype.h>
 
+#define true 1
+#define false 0
+
 struct no{
 
     char nome[20];
@@ -24,9 +27,9 @@ typedef struct no no_t;
 no_t *criar_no(void);
 void inserir(no_t **, no_t *);
 void mostrar_lista(no_t *);
-void remover( no_t **, char []);
+int remover( no_t **, char []);
 no_t *pesquisar( no_t *, char []);
-void continuar(void);
+void continuar(int *);
 
 int main(void){
 
@@ -65,12 +68,12 @@ int main(void){
             case 2: 
                 if( inicio == NULL ){
                     printf("A lista está vazia.\n");
-                    continuar();
+                    continuar(&controle);
                 }
                 
                 else{
                     mostrar_lista(inicio);
-                    continuar();
+                    continuar(&controle);
                 }
 
 
@@ -79,7 +82,7 @@ int main(void){
             case 3: 
                 if( inicio == NULL ){
                     printf("A lista está vazia.\n");
-                    continuar();
+                    continuar(&controle);
                 }
                 else{
                         
@@ -89,12 +92,12 @@ int main(void){
 
                         if( cadastro == NULL ){
                             printf("Nome não cadastrado.\n");
-                            continuar();
+                            continuar(&controle);
                         }
                         else{
                             printf("Rua: %s Numero: %d\n", cadastro->rua, cadastro->numero);
                             printf("Cidade: %s\n Estado: %s \n", cadastro->cidade, cadastro->estado);
-                            continuar();
+                            continuar(&controle);
                         }
                     }
 
@@ -103,20 +106,24 @@ int main(void){
             case 4: 
                 if( inicio == NULL ){
                     printf("A lista está vazia.\n");
-                    continuar();
+                    continuar(&controle);
                 }
                 else{
                     printf("Nome: ");
                     scanf("%s", &nome);
-                    remover(&inicio, nome);
-                    printf("%s removido.\n", nome);
-                    continuar();
+                    if( remover(&inicio, nome) == true){
+                        printf("%s removido.\n", nome);
+                    }
+                    else{
+                        printf("%s não está na lista.\n", nome);
+                    }
+                    continuar(&controle);
                 }
                 break;
 
             default:
                 printf("Erro, opção inválida.\n");
-                continuar();
+                continuar(&controle);
                 break;
 
         }// end switch
@@ -140,6 +147,7 @@ no_t *criar_no(void){
         
         printf("Nome: ");
         scanf("%s", &novo->nome);
+        novo->nome[0]=toupper(novo->nome[0]);
        //fgets(novo->nome, 20, stdin);
 
         printf("Rua: ");
@@ -215,42 +223,77 @@ void mostrar_lista( no_t *inicio){
 
 }
 
-void remover( no_t **inicio, char *nome){
+int remover( no_t **inicio, char nome[]){
 
     no_t *p, *aux; 
 
+     // Transforma em uppercase a primeira letra do nome
+     // para ter uma verificação consistente com os outros nomes na lista
+     nome[0] = toupper(nome[0]);
+
      p = *inicio;
-    // Remover primeira posição 
+    // Remover primeira posição
     if( strcmp(p->nome,nome) == 0 ){
+
         *inicio = p->prox; 
         free(p);
-        //printf("Nome removido.\n");
-        //printf("Primeira posição.\n");
+
+        //printf("DEBUG: p está na primeira posição.\n");
+        //printf("DEBUG: Remover primeira posição.\n");
+
+        return true;
+
     }
 
     else{
 
         // Procurar a posição do nome na lista
-        while( strcmp(nome, p->prox->nome) != 0 && p->prox->prox != NULL){
+        while( strcmp(nome, p->nome) != 0 && p->prox != NULL){
             p = p->prox;
         }
 
-        // Remover última posição na lista
-        if( p->prox->prox == NULL ){
-            free(p->prox);
-            p->prox = NULL;
-           // printf("Nome removido.\n");
-           // printf("Ultima posição.\n");
+        // p está na ultima posição e nome não apareceu na lista
+        if( p->prox == NULL && strcmp(nome,p->nome) !=0 ){
+
+            //printf("DEBUG: p está na ultima posição.\n");
+            //printf("DEBUG: Nome não foi encontrado na lista.\n");
+
+            return false;
         }
 
-        // Qualquer posição no meio
+        // Remover última posição na lista e nome apareceu na lista
+        else if( p->prox == NULL ){
+
+            // fazer p apontar para o penultimo
+            for(p=*inicio; p->prox->prox != NULL; p = p->prox); 
+
+            free(p->prox);
+            p->prox = NULL;
+
+            //printf("DEBUG: p está na ultima posição.\n");
+            //printf("DEBUG: Remover ultima posição.\n");
+
+            return true;
+
+        }
+
+        // p está em qualquer posição no meio da lista 
+        // remover esta posição
         else {
-            //printf("P aponta para %s \n", p->nome);
-            aux = p->prox->prox;
+
+            // fazer p apontar para a posição anterior 
+            aux = p; 
+            for(p=*inicio; p->prox != aux; p = p->prox); 
+
+            aux = p->prox->prox; 
             free(p->prox);
             p->prox = aux;
-            //printf("Nome removido.\n");
-            //printf("Qualquer posição.\n");
+
+            //printf("DEBUG: p está no meio da lista.\n");
+            //printf("DEBUG: Remover posição.\n");
+
+            return true;
+
         }
     }
 }
@@ -277,7 +320,7 @@ no_t *pesquisar( no_t *inicio, char nome[]){
     }
 }
 
-void continuar(void){
+void continuar(int *controle){
     char continuar;
 
         printf("\nContinuar ? S/N: ");
@@ -285,6 +328,10 @@ void continuar(void){
             scanf("%c", &continuar);
             continuar = toupper(continuar);
         }while( continuar != 'S' && continuar != 'N');
+        
+        if(continuar == 'N')
+            *controle = 0;
+
         system("clear");
 
 }
