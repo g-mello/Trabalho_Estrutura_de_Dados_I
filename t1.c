@@ -3,6 +3,7 @@
 //Authors: Guilherme Mello Oliveira, Caio Silva Poli 
 
 #include<stdio.h>
+#include<stdio_ext.h>
 #include<stdlib.h>
 #include<string.h>
 #include<ctype.h>
@@ -14,7 +15,7 @@ struct no{
 
     char nome[20];
     char rua[20];
-    int numero;
+    char numero[5];
     char cidade[20];
     char estado[20];
 
@@ -46,9 +47,9 @@ int main(void){
         printf("============== Menu ============\n");
         printf("0. Sair \n");
         printf("1. Inserir \n");
-        printf("2. Mostrar Lista \n");
-        printf("3. Pesquisar Nome \n");
-        printf("4. Remover Nome \n");
+        printf("2. Mostrar Nomes\n");
+        printf("3. Pesquisar por Nome \n");
+        printf("4. Remover por Nome \n");
         printf("Opção: ");
         scanf("%d", &op);
 
@@ -86,8 +87,10 @@ int main(void){
                 }
                 else{
                         
-                        printf("Nome: ");
-                        scanf("%s", &nome);
+                        printf("\nNome: ");
+                        //scanf("%s", &nome);
+                        __fpurge(stdin);
+                        fgets(nome,20,stdin);
                         cadastro = pesquisar(inicio,nome);
 
                         if( cadastro == NULL ){
@@ -95,8 +98,8 @@ int main(void){
                             continuar(&controle);
                         }
                         else{
-                            printf("Rua: %s Numero: %d\n", cadastro->rua, cadastro->numero);
-                            printf("Cidade: %s\n Estado: %s \n", cadastro->cidade, cadastro->estado);
+                            printf("Rua: %sNumero: %s", cadastro->rua, cadastro->numero);
+                            printf("Cidade: %sEstado: %s", cadastro->cidade, cadastro->estado);
                             continuar(&controle);
                         }
                     }
@@ -109,13 +112,16 @@ int main(void){
                     continuar(&controle);
                 }
                 else{
+                    __fpurge(stdin); // limpa o buffer do teclado
                     printf("Nome: ");
-                    scanf("%s", &nome);
+                    fgets(nome,20,stdin);
+                    nome[0]=toupper(nome[0]); 
+
                     if( remover(&inicio, nome) == true){
-                        printf("%s removido.\n", nome);
+                        printf("Removido.\n");
                     }
                     else{
-                        printf("%s não está na lista.\n", nome);
+                        printf("Não está na lista.\n");
                     }
                     continuar(&controle);
                 }
@@ -144,27 +150,36 @@ no_t *criar_no(void){
     else{
 
         // inicializar o novo nó
-        
+        __fpurge(stdin); // Limpa o buffer do teclado LINUX
+
         printf("Nome: ");
-        scanf("%s", &novo->nome);
-        novo->nome[0]=toupper(novo->nome[0]);
-       //fgets(novo->nome, 20, stdin);
+       // scanf("%s", &novo->nome);
+       fgets(novo->nome, 20, stdin);
+       novo->nome[0]=toupper(novo->nome[0]);
 
         printf("Rua: ");
-        scanf("%s", &novo->rua);
-        //fgets(novo->rua, 20, stdin);
+        //scanf("%s", &novo->rua);
+        fgets(novo->rua, 20, stdin);
 
         printf("Numero: ");
-        do{ scanf("%d", &novo->numero );} while( novo->numero < 0 );
+        do{ 
+            fgets(novo->numero,5,stdin); 
+            if( (atoi(novo->numero) <= 0)){
+               printf("Número inválido\n"); 
+               printf("Numero: ");
+            }
+        } 
+        while( atoi(novo->numero) <= 0 ); // atoi converte string para inteiro
 
+        __fpurge(stdin); // Limpa o buffer do teclado LINUX
 
         printf("Cidade: ");
-        scanf("\n%s", &novo->cidade);
-        //fgets(novo->cidade, 20, stdin);
+        //scanf("\n%s", &novo->cidade);
+        fgets(novo->cidade, 20, stdin);
 
         printf("Estado: ");
-        scanf("\n%s", &novo->estado);
-        //fgets(novo->estado, 20, stdin);
+        //scanf("\n%s", &novo->estado);
+        fgets(novo->estado, 20, stdin);
 
         novo->prox = NULL;
     }
@@ -214,12 +229,11 @@ void mostrar_lista( no_t *inicio){
     no_t *p;
     p = inicio;
 
-    printf("Lista: ");
+    printf("\nNomes: \n\n");
     while( p != NULL ){
-        printf("%s ", p->nome);
+        printf("%s", p->nome);
         p=p->prox;
     }
-    printf("\n");
 
 }
 
@@ -325,8 +339,12 @@ void continuar(int *controle){
 
         printf("\nContinuar ? S/N: ");
         do{
-            scanf("%c", &continuar);
+            scanf("\n%c", &continuar);
             continuar = toupper(continuar);
+            if( continuar != 'S' && continuar != 'N'){
+                printf("Valor inválido, digite S para Sim, N para Não: ");
+            }
+
         }while( continuar != 'S' && continuar != 'N');
         
         if(continuar == 'N')
