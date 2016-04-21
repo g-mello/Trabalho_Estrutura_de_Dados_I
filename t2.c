@@ -3,6 +3,7 @@
 //Authors: Guilherme Mello Oliveira, Caio Silva Poli
 
 #include<stdio.h>
+#include<stdio_ext.h>
 #include<stdlib.h>
 #include<string.h>
 #include<ctype.h>
@@ -19,7 +20,7 @@ lista_c *buscar( lista_c *, char[]);
 void mostrar( lista_c *);
 lista_c *remover( lista_c *, lista_c *, int );
 void sorteio(lista_c *, lista_c *, int );
-void continuar(void);
+void continuar(int *);
 
 int main(void){
 
@@ -51,7 +52,10 @@ int main(void){
 
             case 1:
                 printf("Nome: ");
-                scanf("%s", &nome);
+                __fpurge(stdin);
+                fgets(nome,20,stdin);
+                nome[0]=toupper(nome[0]);
+
                 inserir(cabeca,nome);
                 system("clear");
                 break;
@@ -59,39 +63,54 @@ int main(void){
             case 2:
                 if( cabeca->prox == cabeca ){
                     printf("A lista está vazia.\n");
-                    continuar();
+                    __fpurge(stdin);
+                    continuar(&controle);
                 }
                 else{
                     mostrar(cabeca);
-                    continuar();
+                    __fpurge(stdin);
+                    continuar(&controle);
                 }
                 break;
 
             case 3:
                 if( cabeca->prox == cabeca ){
                     printf("A lista está vazia.\n");
-                    continuar();
+                    __fpurge(stdin);
+                    continuar(&controle);
                 }
                 else{
                     printf("Nome inicial: ");
                     do{
 
-                     scanf("%s", &nome);
-                     if( buscar(cabeca,nome) == NULL)
+                     __fpurge(stdin);
+                     fgets(nome,20,stdin);
+                     nome[0]=toupper(nome[0]);
+
+                     if( buscar(cabeca,nome) == NULL){
                          printf("Nome não está na lista.\n");
+                         printf("Nome inicial: ");
+                     }
 
                     }while( buscar(cabeca,nome) == NULL );
 
                     printf("M: ");
+                    __fpurge(stdin);
                     scanf("%d", &M);
+
                     sorteio(cabeca, buscar(cabeca,nome),M);
-                    continuar();
+
+                    __fpurge(stdin);
+                    continuar(&controle);
                 }
 
                 break;
+
             default:
+
                 printf("Opção inválida.\n");
-                continuar();
+                continuar(&controle);
+
                 break;
 
         }// end while
@@ -145,12 +164,11 @@ void mostrar( lista_c *cabeca ){
     lista_c *p;
     p=cabeca->prox;
 
-    printf("Lista: ");
+    printf("\nNomes: \n");
     while( p != cabeca ){
-        printf("%s ", p->nome);
+        printf("%s", p->nome);
         p = p->prox;
     }
-    printf("\n");
 }
 
 lista_c *remover( lista_c *cabeca, lista_c *inicio, int M){
@@ -163,24 +181,33 @@ lista_c *remover( lista_c *cabeca, lista_c *inicio, int M){
         p = p->prox;
    } 
 
-   // caso p acabe pontando para a cabeça da lista
+   // caso p apontar para a cabeça da lista
+   // passar para o próximo nó
    if( p == cabeca)
        p = p->prox;
 
-   // se somente sobrar um elemento na lista
+   // se somente sobrar ou tiver somente um elemento na lista
+   // Mostrar o ganhador
    if( p->prox == cabeca && cabeca->prox == p){
-       printf("Ganhador da Viagem: %s\n", p->nome);
+       printf("Ganhador da Viagem: %s", p->nome);
+       p=cabeca;
+       free(p->prox);
+       p->prox = p;
+
        return NULL;
    }
+   // Eliminar os nomes
    else{
 
+        // faz r apontar para o anterior que p está apontando
+        // para eliminar p
         r = cabeca->prox;
         while( r->prox != p ){
             r = r->prox;
         }
 
         r->prox = p->prox;
-        printf("Eliminado: %s\n", p->nome);
+        printf("Eliminado: %s", p->nome);
         free(p);
 
         return r->prox;
@@ -190,6 +217,10 @@ lista_c *remover( lista_c *cabeca, lista_c *inicio, int M){
 void sorteio(lista_c *cabeca, lista_c *inicio, int M){
 
     lista_c *p;
+
+    // Remove todos os elementos da lista até que sobre
+    // somente um elemento. Os elementos são retirados a partir do próximo 
+    // nó do último elemento removido
     p=inicio;
     do{
         p=remover(cabeca,p,M);
@@ -197,14 +228,22 @@ void sorteio(lista_c *cabeca, lista_c *inicio, int M){
     }while( p != NULL );
 }
 
-void continuar(void){
+void continuar(int *controle){
     char continuar;
 
     printf("\nContinuar ? S/N: ");
     do{
         scanf("%c", &continuar);
         continuar = toupper(continuar);
+
+        if( continuar != 'S' && continuar != 'N') 
+            printf("Valor inválido, digite S para Sim, N para Não: ");
+
     }while( continuar != 'S' && continuar != 'N'); 
+
+    if( continuar == 'N')
+        *controle = 0;
+
     system("clear");
 
 }

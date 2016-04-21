@@ -51,6 +51,8 @@ int main(void){
         printf("3. Pesquisar por Nome \n");
         printf("4. Remover por Nome \n");
         printf("Opção: ");
+
+        __fpurge(stdin);
         scanf("%d", &op);
 
         switch(op){
@@ -88,7 +90,6 @@ int main(void){
                 else{
                         
                         printf("\nNome: ");
-                        //scanf("%s", &nome);
                         __fpurge(stdin);
                         fgets(nome,20,stdin);
                         cadastro = pesquisar(inicio,nome);
@@ -98,8 +99,8 @@ int main(void){
                             continuar(&controle);
                         }
                         else{
-                            printf("Rua: %sNumero: %s", cadastro->rua, cadastro->numero);
-                            printf("Cidade: %sEstado: %s", cadastro->cidade, cadastro->estado);
+                            printf("Rua: %s Numero: %s", cadastro->rua, cadastro->numero);
+                            printf("Cidade: %s Estado: %s", cadastro->cidade, cadastro->estado);
                             continuar(&controle);
                         }
                     }
@@ -112,8 +113,8 @@ int main(void){
                     continuar(&controle);
                 }
                 else{
-                    __fpurge(stdin); // limpa o buffer do teclado
                     printf("Nome: ");
+                    __fpurge(stdin); // limpa o buffer do teclado
                     fgets(nome,20,stdin);
                     nome[0]=toupper(nome[0]); 
 
@@ -150,8 +151,8 @@ no_t *criar_no(void){
     else{
 
         // inicializar o novo nó
+        
         __fpurge(stdin); // Limpa o buffer do teclado LINUX
-
         printf("Nome: ");
        // scanf("%s", &novo->nome);
        fgets(novo->nome, 20, stdin);
@@ -159,10 +160,12 @@ no_t *criar_no(void){
 
         printf("Rua: ");
         //scanf("%s", &novo->rua);
+        __fpurge(stdin); // Limpa o buffer do teclado LINUX
         fgets(novo->rua, 20, stdin);
 
         printf("Numero: ");
         do{ 
+            __fpurge(stdin); // Limpa o buffer do teclado LINUX
             fgets(novo->numero,5,stdin); 
             if( (atoi(novo->numero) <= 0)){
                printf("Número inválido\n"); 
@@ -171,14 +174,14 @@ no_t *criar_no(void){
         } 
         while( atoi(novo->numero) <= 0 ); // atoi converte string para inteiro
 
-        __fpurge(stdin); // Limpa o buffer do teclado LINUX
-
         printf("Cidade: ");
         //scanf("\n%s", &novo->cidade);
+        __fpurge(stdin); // Limpa o buffer do teclado LINUX
         fgets(novo->cidade, 20, stdin);
 
         printf("Estado: ");
         //scanf("\n%s", &novo->estado);
+        __fpurge(stdin); // Limpa o buffer do teclado LINUX
         fgets(novo->estado, 20, stdin);
 
         novo->prox = NULL;
@@ -211,7 +214,6 @@ void inserir(no_t **inicio, no_t *novo){
             // Fazer p apontar para o nó onde o novo nó sera inserido antes
             p=*inicio;
             while( p->prox != NULL && strcmp(p->prox->nome, novo->nome) < 0 ) {
-
                 p = p->prox;
             }
 
