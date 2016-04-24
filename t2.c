@@ -22,6 +22,7 @@ lista_c *remover( lista_c *, lista_c *, int );
 void sorteio(lista_c *, lista_c *, int );
 void continuar(int *);
 
+
 int main(void){
 
     lista_c *cabeca;
@@ -50,17 +51,19 @@ int main(void){
                 controle = 0;
                 break;
 
-            case 1:
+            case 1: // Inserir
                 printf("Nome: ");
                 __fpurge(stdin);
                 fgets(nome,20,stdin);
+
                 nome[0]=toupper(nome[0]);
 
                 inserir(cabeca,nome);
-                system("clear");
+                 __fpurge(stdin);
+                continuar(&controle);
                 break;
 
-            case 2:
+            case 2: // Mostrar
                 if( cabeca->prox == cabeca ){
                     printf("A lista está vazia.\n");
                     __fpurge(stdin);
@@ -73,7 +76,7 @@ int main(void){
                 }
                 break;
 
-            case 3:
+            case 3: // Sorteio
                 if( cabeca->prox == cabeca ){
                     printf("A lista está vazia.\n");
                     __fpurge(stdin);
@@ -124,7 +127,7 @@ void inserir( lista_c *cabeca, char nome[]){
     lista_c *p, *novo;
 
     if( buscar(cabeca, nome) != NULL ){
-        printf("Erro: Nome já inserido");
+        printf("\nErro: Nome já inserido\n");
     }
     else{
         // fazer p apontar para a ultima posição
@@ -177,16 +180,23 @@ lista_c *remover( lista_c *cabeca, lista_c *inicio, int M){
 
    // faz p rodar M vezes na lista
    p=inicio;
+
+   if( p == cabeca ) // caso p aponte para cabeça durante o processo
+       p = p->prox;
+
    for( int i=0; i < M; i++){
-        p = p->prox;
+       if( p->prox == cabeca )
+           p = p->prox->prox; 
+       else
+            p = p->prox;
    } 
 
    // caso p apontar para a cabeça da lista
    // passar para o próximo nó
-   if( p == cabeca)
-       p = p->prox;
+   //if( p == cabeca)
+    //   p = p->prox;
 
-   // se somente sobrar ou tiver somente um elemento na lista
+   // se somente sobrar um ou tiver somente um elemento na lista
    // Mostrar o ganhador
    if( p->prox == cabeca && cabeca->prox == p){
        printf("Ganhador da Viagem: %s", p->nome);
@@ -221,12 +231,14 @@ void sorteio(lista_c *cabeca, lista_c *inicio, int M){
     // Remove todos os elementos da lista até que sobre
     // somente um elemento. Os elementos são retirados a partir do próximo 
     // nó do último elemento removido
+    
     p=inicio;
     do{
         p=remover(cabeca,p,M);
 
     }while( p != NULL );
 }
+
 
 void continuar(int *controle){
     char continuar;
@@ -237,7 +249,7 @@ void continuar(int *controle){
         continuar = toupper(continuar);
 
         if( continuar != 'S' && continuar != 'N') 
-            printf("Valor inválido, digite S para Sim, N para Não: ");
+            printf("\nValor inválido, digite S para Sim, N para Não: ");
 
     }while( continuar != 'S' && continuar != 'N'); 
 
