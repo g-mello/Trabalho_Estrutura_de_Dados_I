@@ -17,7 +17,7 @@ struct no{
     char rua[20];
     char numero[5];
     char cidade[20];
-    char estado[20];
+    char estado[2];
 
     struct no *prox;
 
@@ -93,6 +93,8 @@ int main(void){
                         printf("\nNome: ");
                         __fpurge(stdin);
                         fgets(nome,20,stdin);
+                        nome[0] = toupper(nome[0]);
+
                         cadastro = pesquisar(inicio,nome);
 
                         if( cadastro == NULL ){
@@ -100,8 +102,9 @@ int main(void){
                             continuar(&controle);
                         }
                         else{
-                            printf("Rua: %s Numero: %s", cadastro->rua, cadastro->numero);
-                            printf("Cidade: %s Estado: %s", cadastro->cidade, cadastro->estado);
+                            // Mostrar dados
+                            printf("Rua: %sNumero: %s", cadastro->rua, cadastro->numero);
+                            printf("Cidade: %sEstado: %s", cadastro->cidade, cadastro->estado);
                             continuar(&controle);
                         }
                     }
@@ -158,6 +161,7 @@ no_t *criar_no(void){
             __fpurge(stdin); // Limpa o buffer do teclado LINUX
             fgets(novo->nome, 20, stdin);
             
+            // Mensagem de erro
             if( (novo->nome[0] >= 32 && novo->nome[0] <= 64) ||
                (novo->nome[0] >= 91 && novo->nome[0] <= 96 )){
                 printf("Nome inválido.\nNome: ");
@@ -169,12 +173,15 @@ no_t *criar_no(void){
 
        novo->nome[0]=toupper(novo->nome[0]);
 
+
         printf("Rua: ");
         do{
 
             __fpurge(stdin); // Limpa o buffer do teclado LINUX
             fgets(novo->rua, 20, stdin);
 
+
+            // Mensagem de erro
             if( (novo->rua[0] >= 32 && novo->rua[0] <= 64) ||
                (novo->rua[0] >= 91 && novo->rua[0] <= 96 )){
                 printf("Rua inválida.\nRua: ");
@@ -183,6 +190,8 @@ no_t *criar_no(void){
         // seleciona apenas caracteres [A-Z,a-z] para o primeiro caracter
         }while( (novo->rua[0] >= 32 && novo->rua[0] <= 64) ||
                (novo->rua[0] >= 91 && novo->rua[0] <= 96 )); 
+        
+        novo->rua[0] = toupper(novo->rua[0]);
 
 
         printf("Numero: ");
@@ -190,17 +199,20 @@ no_t *criar_no(void){
             __fpurge(stdin); // Limpa o buffer do teclado LINUX
             fgets(novo->numero,5,stdin); 
             
+            // Mensagem de erro
             if( (atoi(novo->numero) <= 0)){
                printf("Número inválido.\nNumero:"); 
             }
         } 
         while( atoi(novo->numero) <= 0 ); // atoi converte string para inteiro
 
+
         printf("Cidade: ");
         do{
              __fpurge(stdin); // Limpa o buffer do teclado LINUX
              fgets(novo->cidade, 20, stdin);
 
+             // Mensagem de erro
              if( (novo->cidade[0] >= 32 && novo->cidade[0] <= 64) ||
                (novo->cidade[0] >= 91 && novo->cidade[0] <= 96 )){
                  printf("Cidade inválida.\nCidade: ");
@@ -210,10 +222,13 @@ no_t *criar_no(void){
         }while( (novo->cidade[0] >= 32 && novo->cidade[0] <= 64) ||
                (novo->cidade[0] >= 91 && novo->cidade[0] <= 96 )); 
 
-        printf("Estado: ");
+        novo->cidade[0] = toupper(novo->cidade[0]);
+
+
+        printf("Estado(Sigla): ");
         do{
             __fpurge(stdin); // Limpa o buffer do teclado LINUX
-            fgets(novo->estado, 20, stdin);
+            fgets(novo->estado, 3, stdin);
 
             if( (novo->estado[0] >= 32 && novo->estado[0] <= 64) ||
                (novo->estado[0] >= 91 && novo->estado[0] <= 96 )){
@@ -223,6 +238,9 @@ no_t *criar_no(void){
         // seleciona apenas caracteres [A-Z,a-z] para o primeiro caracter
         }while( (novo->estado[0] >= 32 && novo->estado[0] <= 64) ||
                (novo->estado[0] >= 91 && novo->estado[0] <= 96 )); 
+
+        novo->estado[0] = toupper(novo->estado[0]);
+        novo->estado[1] = toupper(novo->estado[1]);
 
         novo->prox = NULL;
     }
