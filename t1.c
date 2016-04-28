@@ -65,6 +65,7 @@ int main(void){
             case 1: // Inserir 
 
                 inserir(&inicio, criar_no()); 
+                continuar(&controle);
                 system("clear");
 
                 break;
@@ -134,6 +135,7 @@ int main(void){
 
             default:
                 printf("Erro, opção inválida.\n");
+                __fpurge(stdin);
                 continuar(&controle);
                 break;
 
@@ -172,7 +174,6 @@ no_t *criar_no(void){
                (novo->nome[0] >= 91 && novo->nome[0] <= 96 )); 
 
        novo->nome[0]=toupper(novo->nome[0]);
-
 
         printf("Rua: ");
         do{
@@ -255,21 +256,22 @@ void inserir(no_t **inicio, no_t *novo){
     p = *inicio;
 
     // Verificar se o nome já foi cadastrado
+    novo->nome[0] = toupper(novo->nome[0]);
     if( pesquisar(*inicio, novo->nome) != NULL ){
-            printf("\n Erro: Nome já cadastrado.\n");
+            printf("\nErro: Nome já cadastrado.\n");
     }
     else{
     
         // A lista está vazia ou tem apenas o primeiro nome já é maior ou igual
-        // que o novo nome
-        if( p == NULL || ( strcmp(p->nome, novo->nome) >= 0 ) ){
+        // que o novo nome insere antes
+        if( p == NULL || ( strcmp(p->nome, novo->nome) > 0 ) ){
 
             novo->prox = *inicio;
             *inicio = novo;
         }
         else{
             
-            // Fazer p apontar para o nó onde o novo nó sera inserido antes
+            // Fazer p apontar para a posição onde o novo nó sera inserido 
             p=*inicio;
             while( p->prox != NULL && strcmp(p->prox->nome, novo->nome) < 0 ) {
                 p = p->prox;
