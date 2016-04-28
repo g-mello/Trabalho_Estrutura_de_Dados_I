@@ -56,11 +56,18 @@ int main(void){
                 __fpurge(stdin);
                 fgets(nome,20,stdin);
 
-                nome[0]=toupper(nome[0]);
+                if( *nome == 32 || (*nome >= 48 && *nome <= 57) ){
+                    printf("Erro, nome inválido.\n");
+                    continuar(&controle);
+                }
+                else{
 
-                inserir(cabeca,nome);
-                 __fpurge(stdin);
-                continuar(&controle);
+                    nome[0]=toupper(nome[0]);
+                    inserir(cabeca,nome);
+                    __fpurge(stdin);
+
+                    continuar(&controle);
+                }
                 break;
 
             case 2: // Mostrar
@@ -245,11 +252,14 @@ void continuar(int *controle){
 
     printf("\nContinuar ? S/N: ");
     do{
+        __fpurge(stdin);
         scanf("%c", &continuar);
         continuar = toupper(continuar);
 
-        if( continuar != 'S' && continuar != 'N') 
-            printf("\nValor inválido, digite S para Sim, N para Não: ");
+        if( (continuar != 'S' && continuar != 'N') || continuar == 32 ||
+              (continuar >= 48 && continuar <= 57) ){
+              printf("\nValor inválido, digite S para Sim, N para Não: ");
+        }
 
     }while( continuar != 'S' && continuar != 'N'); 
 
