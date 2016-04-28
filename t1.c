@@ -25,6 +25,7 @@ struct no{
 
 typedef struct no no_t;
 
+// Prototipos
 no_t *criar_no(void);
 void inserir(no_t **, no_t *);
 void mostrar_lista(no_t *);
@@ -57,18 +58,18 @@ int main(void){
 
         switch(op){
 
-            case 0: 
+            case 0: // Sair 
                 controle = 0;
                 break;
 
-            case 1: 
+            case 1: // Inserir 
 
                 inserir(&inicio, criar_no()); 
                 system("clear");
 
                 break;
 
-            case 2: 
+            case 2: // Mostrar 
                 if( inicio == NULL ){
                     printf("A lista está vazia.\n");
                     continuar(&controle);
@@ -82,13 +83,13 @@ int main(void){
 
                 break;
 
-            case 3: 
+            case 3: // Pesquisar 
                 if( inicio == NULL ){
                     printf("A lista está vazia.\n");
                     continuar(&controle);
                 }
                 else{
-                        
+
                         printf("\nNome: ");
                         __fpurge(stdin);
                         fgets(nome,20,stdin);
@@ -107,7 +108,7 @@ int main(void){
 
                 break;
 
-            case 4: 
+            case 4: // Remover 
                 if( inicio == NULL ){
                     printf("A lista está vazia.\n");
                     continuar(&controle);
@@ -152,37 +153,76 @@ no_t *criar_no(void){
 
         // inicializar o novo nó
         
-        __fpurge(stdin); // Limpa o buffer do teclado LINUX
         printf("Nome: ");
-       // scanf("%s", &novo->nome);
-       fgets(novo->nome, 20, stdin);
+        do{
+            __fpurge(stdin); // Limpa o buffer do teclado LINUX
+            fgets(novo->nome, 20, stdin);
+            
+            if( (novo->nome[0] >= 32 && novo->nome[0] <= 64) ||
+               (novo->nome[0] >= 91 && novo->nome[0] <= 96 )){
+                printf("Nome inválido.\nNome: ");
+            } 
+
+        // seleciona apenas caracteres [A-Z,a-z] para o primeiro caracter
+        }while( (novo->nome[0] >= 32 && novo->nome[0] <= 64) ||
+               (novo->nome[0] >= 91 && novo->nome[0] <= 96 )); 
+
        novo->nome[0]=toupper(novo->nome[0]);
 
         printf("Rua: ");
-        //scanf("%s", &novo->rua);
-        __fpurge(stdin); // Limpa o buffer do teclado LINUX
-        fgets(novo->rua, 20, stdin);
+        do{
+
+            __fpurge(stdin); // Limpa o buffer do teclado LINUX
+            fgets(novo->rua, 20, stdin);
+
+            if( (novo->rua[0] >= 32 && novo->rua[0] <= 64) ||
+               (novo->rua[0] >= 91 && novo->rua[0] <= 96 )){
+                printf("Rua inválida.\nRua: ");
+            } 
+
+        // seleciona apenas caracteres [A-Z,a-z] para o primeiro caracter
+        }while( (novo->rua[0] >= 32 && novo->rua[0] <= 64) ||
+               (novo->rua[0] >= 91 && novo->rua[0] <= 96 )); 
+
 
         printf("Numero: ");
         do{ 
             __fpurge(stdin); // Limpa o buffer do teclado LINUX
             fgets(novo->numero,5,stdin); 
+            
             if( (atoi(novo->numero) <= 0)){
-               printf("Número inválido\n"); 
-               printf("Numero: ");
+               printf("Número inválido.\nNumero:"); 
             }
         } 
         while( atoi(novo->numero) <= 0 ); // atoi converte string para inteiro
 
         printf("Cidade: ");
-        //scanf("\n%s", &novo->cidade);
-        __fpurge(stdin); // Limpa o buffer do teclado LINUX
-        fgets(novo->cidade, 20, stdin);
+        do{
+             __fpurge(stdin); // Limpa o buffer do teclado LINUX
+             fgets(novo->cidade, 20, stdin);
+
+             if( (novo->cidade[0] >= 32 && novo->cidade[0] <= 64) ||
+               (novo->cidade[0] >= 91 && novo->cidade[0] <= 96 )){
+                 printf("Cidade inválida.\nCidade: ");
+             } 
+             
+        // seleciona apenas caracteres [A-Z,a-z] para o primeiro caracter
+        }while( (novo->cidade[0] >= 32 && novo->cidade[0] <= 64) ||
+               (novo->cidade[0] >= 91 && novo->cidade[0] <= 96 )); 
 
         printf("Estado: ");
-        //scanf("\n%s", &novo->estado);
-        __fpurge(stdin); // Limpa o buffer do teclado LINUX
-        fgets(novo->estado, 20, stdin);
+        do{
+            __fpurge(stdin); // Limpa o buffer do teclado LINUX
+            fgets(novo->estado, 20, stdin);
+
+            if( (novo->estado[0] >= 32 && novo->estado[0] <= 64) ||
+               (novo->estado[0] >= 91 && novo->estado[0] <= 96 )){
+                printf("Estado inválido.\nEstado: ");
+            } 
+        
+        // seleciona apenas caracteres [A-Z,a-z] para o primeiro caracter
+        }while( (novo->estado[0] >= 32 && novo->estado[0] <= 64) ||
+               (novo->estado[0] >= 91 && novo->estado[0] <= 96 )); 
 
         novo->prox = NULL;
     }
@@ -231,7 +271,7 @@ void mostrar_lista( no_t *inicio){
     no_t *p;
     p = inicio;
 
-    printf("\nNomes: \n\n");
+    printf("\nNomes:\n");
     while( p != NULL ){
         printf("%s", p->nome);
         p=p->prox;
@@ -254,9 +294,6 @@ int remover( no_t **inicio, char nome[]){
         *inicio = p->prox; 
         free(p);
 
-        //printf("DEBUG: p está na primeira posição.\n");
-        //printf("DEBUG: Remover primeira posição.\n");
-
         return true;
 
     }
@@ -271,9 +308,6 @@ int remover( no_t **inicio, char nome[]){
         // p está na ultima posição e nome não apareceu na lista
         if( p->prox == NULL && strcmp(nome,p->nome) !=0 ){
 
-            //printf("DEBUG: p está na ultima posição.\n");
-            //printf("DEBUG: Nome não foi encontrado na lista.\n");
-
             return false;
         }
 
@@ -285,9 +319,6 @@ int remover( no_t **inicio, char nome[]){
 
             free(p->prox);
             p->prox = NULL;
-
-            //printf("DEBUG: p está na ultima posição.\n");
-            //printf("DEBUG: Remover ultima posição.\n");
 
             return true;
 
@@ -304,9 +335,6 @@ int remover( no_t **inicio, char nome[]){
             aux = p->prox->prox; 
             free(p->prox);
             p->prox = aux;
-
-            //printf("DEBUG: p está no meio da lista.\n");
-            //printf("DEBUG: Remover posição.\n");
 
             return true;
 
@@ -344,7 +372,7 @@ void continuar(int *controle){
             scanf("\n%c", &continuar);
             continuar = toupper(continuar);
             if( continuar != 'S' && continuar != 'N'){
-                printf("Valor inválido, digite S para Sim, N para Não: ");
+                printf("\nValor inválido.\nDigite S para Sim, N para Não: ");
             }
 
         }while( continuar != 'S' && continuar != 'N');
