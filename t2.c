@@ -154,8 +154,12 @@ void inserir( lista_c *cabeca, char nome[]){
 }
 
 lista_c *buscar( lista_c *cabeca, char nome[]){
+    // Função para buscar um nome na lista e retornar seu nó
+    // na lista
+    
     lista_c *p;
 
+    // procura o nome na lista
     p=cabeca->prox;
     while( p != cabeca && strcmp(p->nome, nome) != 0){
         p = p->prox;
@@ -170,6 +174,7 @@ lista_c *buscar( lista_c *cabeca, char nome[]){
 }
 
 void mostrar( lista_c *cabeca ){
+    // Função para mostrar os nomes na lista circular
     
     lista_c *p;
     p=cabeca->prox;
@@ -182,6 +187,8 @@ void mostrar( lista_c *cabeca ){
 }
 
 lista_c *remover( lista_c *cabeca, lista_c *inicio, int M){
+    // Função para remover nó na lista a partir de "saltos" do tamanho
+    // de M começando pela posição "inicio"
 
    lista_c *p, *r;
 
@@ -197,11 +204,6 @@ lista_c *remover( lista_c *cabeca, lista_c *inicio, int M){
        else
             p = p->prox;
    } 
-
-   // caso p apontar para a cabeça da lista
-   // passar para o próximo nó
-   //if( p == cabeca)
-    //   p = p->prox;
 
    // se somente sobrar um ou tiver somente um elemento na lista
    // Mostrar o ganhador
@@ -232,6 +234,8 @@ lista_c *remover( lista_c *cabeca, lista_c *inicio, int M){
 }
 
 void sorteio(lista_c *cabeca, lista_c *inicio, int M){
+    // Função para realizar o sorteio, chamando a função remover
+    // até não sobrar nenhum nó na lista
 
     lista_c *p;
 
@@ -248,6 +252,8 @@ void sorteio(lista_c *cabeca, lista_c *inicio, int M){
 
 
 void continuar(int *controle){
+    // Função para controlar a saída do menu
+    
     char continuar;
 
     printf("\nContinuar ? S/N: ");
