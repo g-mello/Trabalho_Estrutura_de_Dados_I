@@ -31,13 +31,14 @@ void inserir(no_t **, no_t *);
 void mostrar_lista(no_t *);
 int remover( no_t **, char []);
 no_t *pesquisar( no_t *, char []);
-void continuar(int *);
+void continuar(short *);
 
 int main(void){
 
-    no_t *inicio, *cadastro;
+    no_t *inicio, *cadastro; // cadastro será usado para verificar se um
+                             // nome já existe com aquele cadastro
     char nome[20];
-    int controle, op;
+    short controle, op;
 
     inicio=NULL;
     cadastro=NULL;
@@ -54,7 +55,7 @@ int main(void){
         printf("Opção: ");
 
         __fpurge(stdin);
-        scanf("%d", &op);
+        scanf("%hd", &op);
 
         switch(op){
 
@@ -81,7 +82,6 @@ int main(void){
                     continuar(&controle);
                 }
 
-
                 break;
 
             case 3: // Pesquisar 
@@ -96,6 +96,7 @@ int main(void){
                         fgets(nome,20,stdin);
                         nome[0] = toupper(nome[0]);
 
+                        // procura se o nome já foi cadastrado
                         cadastro = pesquisar(inicio,nome);
 
                         if( cadastro == NULL ){
@@ -146,6 +147,8 @@ int main(void){
 
 }
 
+// Definição das funções 
+
 no_t *criar_no(void){
     // Função para criar um novo nó para ser inserido na função inserir
     
@@ -156,7 +159,7 @@ no_t *criar_no(void){
         printf("Erro na alocação");
     else{
 
-        // inicializar o novo nó
+        // inicializa as informações do novo nó
         
         printf("Nome: ");
         do{
@@ -174,6 +177,7 @@ no_t *criar_no(void){
                (novo->nome[0] >= 91 && novo->nome[0] <= 96 )); 
 
        novo->nome[0]=toupper(novo->nome[0]);
+
 
         printf("Rua: ");
         do{
@@ -256,14 +260,13 @@ void inserir(no_t **inicio, no_t *novo){
     p = *inicio;
 
     // Verificar se o nome já foi cadastrado
-    novo->nome[0] = toupper(novo->nome[0]);
     if( pesquisar(*inicio, novo->nome) != NULL ){
             printf("\nErro: Nome já cadastrado.\n");
     }
     else{
     
-        // A lista está vazia ou tem apenas o primeiro nome já é maior ou igual
-        // que o novo nome insere antes
+        // A lista está vazia insere normalmente. Ou primeiro nome já inserido 
+        // na lista e é maior que o novo nome, insere o novo nó antes do primeiro.
         if( p == NULL || ( strcmp(p->nome, novo->nome) > 0 ) ){
 
             novo->prox = *inicio;
@@ -300,6 +303,7 @@ void mostrar_lista( no_t *inicio){
 }
 
 int remover( no_t **inicio, char nome[]){
+    // Função para remover o nó que contem o nome informado
 
     no_t *p, *aux; 
 
@@ -363,6 +367,7 @@ int remover( no_t **inicio, char nome[]){
 }
 
 no_t *pesquisar( no_t *inicio, char nome[]){
+    // Função para pesquisar existe algum nó com o nome informado
 
     no_t *p;
 
@@ -372,19 +377,24 @@ no_t *pesquisar( no_t *inicio, char nome[]){
     }
     else{
 
+        // Procura pelo nome
         p = inicio;
         while( p != NULL && strcmp(p->nome, nome) != 0 ) {
             p = p->prox; 
         }
         
+        // nome encontrado
         if( p != NULL )
             return p;
+        // nome não encontrado
         else
             return NULL;
     }
 }
 
-void continuar(int *controle){
+void continuar(short *controle){
+    // Função para controlar a saída controlada do menu
+    
     char continuar;
 
         printf("\nContinuar ? S/N: ");
